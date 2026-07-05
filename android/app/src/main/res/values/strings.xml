@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Cabin Crew FDTL</string>
+    <string name="title_activity_main">Cabin Crew FDTL</string>
+    <string name="package_name">com.fdtlcalc.cabincrew</string>
+    <string name="custom_url_scheme">com.fdtlcalc.cabincrew</string>
+</resources>

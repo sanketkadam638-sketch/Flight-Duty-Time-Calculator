@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Cabin Crew FDTL Calculator — DGCA CAR-7-J-I</title>
+<style>
+  :root{
+    --bg:#0a1120;
+    --panel:#111b2e;
+    --panel-2:#0d1626;
+    --line:#233150;
+    --line-soft:#1a2740;
+    --text:#e7edf7;
+    --muted:#8ea0c2;
+    --muted-2:#5f7398;
+    --amber:#f5a623;
+    --amber-dim:#8a6420;
+    --teal:#34d399;
+    --teal-dim:#1c5c47;
+    --red:#f87171;
+    --red-dim:#6b2b2b;
+    --blue:#38bdf8;
+    --sans: -apple-system, "Segoe UI", Roboto, system-ui, "Helvetica Neue", Arial, sans-serif;
+    --mono: "SFMono-Regular", Consolas, "Roboto Mono", "Liberation Mono", Menlo, monospace;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(1200px 600px at 15% -10%, #132038 0%, transparent 60%),
+      radial-gradient(900px 500px at 110% 10%, #0f1a2e 0%, transparent 55%),
+      var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    line-height:1.5;
+    padding:28px 16px 60px;
+  }
+  .wrap{max-width:920px;margin:0 auto;}
+
+  header.top{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:16px;
+    padding-bottom:22px;
+    border-bottom:1px solid var(--line);
+    margin-bottom:26px;
+    flex-wrap:wrap;
+  }
+  .brand-mark{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.18em;
+    color:var(--amber);
+    text-transform:uppercase;
+    margin-bottom:6px;
+  }
+  h1{
+    font-size:26px;
+    margin:0 0 6px;
+    font-weight:700;
+    letter-spacing:-0.01em;
+  }
+  .sub{color:var(--muted);font-size:13.5px;max-width:56ch;}
+  .reg-tag{
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--muted-2);
+    border:1px solid var(--line);
+    background:var(--panel-2);
+    padding:8px 12px;
+    border-radius:6px;
+    white-space:nowrap;
+    text-align:right;
+  }
+  .profile-badge{
+    margin-top:8px;
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--teal);
+    display:flex;
+    align-items:center;
+    gap:8px;
+    justify-content:flex-end;
+    flex-wrap:wrap;
+  }
+  .profile-badge button{
+    background:transparent;
+    border:1px solid var(--line);
+    color:var(--muted);
+    font-family:var(--sans);
+    font-size:11px;
+    padding:4px 9px;
+    border-radius:5px;
+    cursor:pointer;
+  }
+  .profile-badge button:hover{border-color:var(--blue);color:var(--blue);}
+
+  .card{
+    background:linear-gradient(180deg, var(--panel) 0%, var(--panel-2) 100%);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:22px;
+    margin-bottom:20px;
+  }
+  .card h2{
+    font-size:15px;
+    margin:0 0 4px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .card h2 .idx{
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--bg);
+    background:var(--amber);
+    padding:2px 7px;
+    border-radius:4px;
+    font-weight:700;
+  }
+  .card .desc{color:var(--muted);font-size:12.5px;margin:0 0 18px;}
+
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+  @media(max-width:620px){.grid{grid-template-columns:1fr;}}
+  .field label{
+    display:block;
+    font-size:11.5px;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    color:var(--muted);
+    margin-bottom:8px;
+    font-weight:600;
+  }
+  input[type=text], select{
+    width:100%;
+    background:#0b1424;
+    border:1px solid var(--line);
+    color:var(--text);
+    font-family:var(--mono);
+    font-size:14px;
+    padding:10px 11px;
+    border-radius:6px;
+    outline:none;
+  }
+  input[type=text]:focus, select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(56,189,248,.15);}
+  select{font-family:var(--sans);font-size:13.5px;}
+
+  .btn{
+    margin-top:16px;
+    width:100%;
+    background:var(--amber);
+    color:#1a1204;
+    border:none;
+    font-family:var(--sans);
+    font-weight:700;
+    font-size:14px;
+    padding:12px;
+    border-radius:7px;
+    cursor:pointer;
+    letter-spacing:.01em;
+  }
+  .btn:hover{background:#ffb84d;}
+  .btn.secondary{background:transparent;border:1px solid var(--line);color:var(--text);font-weight:600;}
+  .btn.secondary:hover{border-color:var(--blue);color:var(--blue);}
+
+  .result{margin-top:18px;}
+  .readout{
+    border:1px solid var(--line-soft);
+    background:#0a1220;
+    border-radius:8px;
+    padding:16px;
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px 20px;
+  }
+  @media(max-width:560px){.readout{grid-template-columns:1fr;}}
+  .readout .item .k{font-size:11px;color:var(--muted-2);text-transform:uppercase;letter-spacing:.06em;}
+  .readout .item .v{font-family:var(--mono);font-size:16px;font-weight:600;margin-top:2px;}
+  .v.ok{color:var(--teal);}
+  .v.warn{color:var(--amber);}
+  .v.bad{color:var(--red);}
+
+  .status-banner{
+    margin-top:12px;
+    padding:12px 14px;
+    border-radius:7px;
+    font-size:13.5px;
+    font-weight:600;
+    display:flex;
+    gap:10px;
+    align-items:flex-start;
+  }
+  .status-banner.ok{background:rgba(52,211,153,.09);border:1px solid var(--teal-dim);color:var(--teal);}
+  .status-banner.warn{background:rgba(245,166,35,.09);border:1px solid var(--amber-dim);color:var(--amber);}
+  .status-banner.bad{background:rgba(248,113,113,.09);border:1px solid var(--red-dim);color:var(--red);}
+  .status-banner ul{margin:6px 0 0;padding-left:18px;font-weight:500;}
+
+  /* timeline */
+  .timeline-wrap{margin-top:18px;}
+  .timeline-labels{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:6px;}
+  .timeline{
+    position:relative;
+    height:34px;
+    border-radius:6px;
+    overflow:hidden;
+    background:#0a1220;
+    border:1px solid var(--line-soft);
+    display:flex;
+  }
+  .seg{height:100%;position:relative;}
+  .seg.duty{background:repeating-linear-gradient(135deg,#1b3a5c,#1b3a5c 6px,#173254 6px,#173254 12px);}
+  .seg.wocl{background:rgba(245,166,35,.55);border-left:1px solid rgba(245,166,35,.9);border-right:1px solid rgba(245,166,35,.9);}
+  .seg.rest{background:repeating-linear-gradient(135deg,#123326,#123326 6px,#0f2b20 6px,#0f2b20 12px);}
+  .seg.commute{background:repeating-linear-gradient(135deg,#3a2f52,#3a2f52 6px,#332a48 6px,#332a48 12px);}
+  .timeline-legend{display:flex;gap:18px;margin-top:8px;font-size:11.5px;color:var(--muted);flex-wrap:wrap;}
+  .timeline-legend span{display:inline-flex;align-items:center;gap:6px;}
+  .swatch{width:11px;height:11px;border-radius:2px;display:inline-block;}
+
+  table.ref{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:8px;}
+  table.ref th, table.ref td{
+    border:1px solid var(--line-soft);
+    padding:8px 10px;
+    text-align:left;
+    font-family:var(--mono);
+  }
+  table.ref th{background:#0d1728;color:var(--muted);font-weight:600;text-transform:uppercase;font-size:10.5px;letter-spacing:.04em;}
+  table.ref td.pass{color:var(--teal);}
+  table.ref td.fail{color:var(--red);font-weight:700;}
+
+  .footnote{color:var(--muted-2);font-size:11.5px;margin-top:26px;line-height:1.6;border-top:1px solid var(--line);padding-top:16px;}
+  .footnote strong{color:var(--muted);}
+
+  /* ===== Wheel picker ===== */
+  .wheel-field{margin-bottom:4px;}
+  .wheel-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+  .wheel-wrap{position:relative;height:120px;}
+  .wheel-group{display:flex;align-items:center;gap:10px;height:120px;position:relative;z-index:2;}
+  .wheel-col{
+    position:relative;
+    height:120px;
+    width:66px;
+    overflow-y:scroll;
+    scroll-snap-type:y mandatory;
+    -webkit-overflow-scrolling:touch;
+    border:1px solid var(--line);
+    border-radius:8px;
+    background:#0b1424;
+    scrollbar-width:none;
+  }
+  .wheel-col.wide{width:78px;}
+  .wheel-col::-webkit-scrollbar{display:none;}
+  .wheel-col .wpad{height:40px;}
+  .wheel-item{
+    height:40px;
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--mono);font-size:15px;color:var(--muted-2);
+    scroll-snap-align:center;
+    user-select:none;
+    cursor:pointer;
+  }
+  .wheel-item.selected{color:var(--text);font-weight:700;font-size:17px;}
+  .wheel-colon{font-family:var(--mono);font-size:20px;color:var(--muted);}
+  .wheel-unit{font-family:var(--sans);font-size:12px;color:var(--muted);}
+  .wheel-highlight{
+    position:absolute;top:40px;left:0;right:0;height:40px;
+    border-top:1px solid var(--blue);border-bottom:1px solid var(--blue);
+    background:rgba(56,189,248,.06);
+    pointer-events:none;z-index:1;border-radius:4px;
+  }
+  .wheel-mask-top, .wheel-mask-bottom{position:absolute;left:0;right:0;height:38px;pointer-events:none;z-index:3;}
+  .wheel-mask-top{top:0;background:linear-gradient(#0f1a2c, transparent);}
+  .wheel-mask-bottom{bottom:0;background:linear-gradient(transparent, #0f1a2c);}
+
+  /* ===== Setup overlay ===== */
+  .overlay{
+    position:fixed;inset:0;background:rgba(5,9,18,.92);
+    display:flex;align-items:center;justify-content:center;
+    z-index:1000;padding:20px;
+  }
+  .overlay.hidden{display:none;}
+  .overlay-card{
+    max-width:440px;width:100%;
+    background:linear-gradient(180deg, var(--panel) 0%, var(--panel-2) 100%);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:26px;
+    max-height:92vh;
+    overflow-y:auto;
+  }
+  .overlay-card h2{font-size:19px;margin:0 0 6px;}
+</style>
+</head>
+<body>
+
+<!-- ============ SETUP OVERLAY ============ -->
+<div class="overlay" id="setupOverlay">
+  <div class="overlay-card">
+    <div class="brand-mark">Before you start</div>
+    <h2>Set up your profile</h2>
+    <p class="sub" style="margin-bottom:20px;">Used to tailor duty/rest checks to your operator. Saved on this device — change it anytime from the Profile button.</p>
+
+    <div class="field" style="margin-bottom:18px;">
+      <label for="airlineSelect">Airline (Indian scheduled carrier)</label>
+      <select id="airlineSelect">
+        <option value="">Select your airline…</option>
+        <option>Air India</option>
+        <option>Air India Express</option>
+        <option>IndiGo</option>
+        <option>Akasa Air</option>
+        <option>SpiceJet</option>
+        <option>Alliance Air</option>
+        <option>FLY91</option>
+        <option>Star Air</option>
+        <option>IndiaOne Air</option>
+        <option value="__other">Other Indian scheduled carrier…</option>
+      </select>
+      <input type="text" id="airlineOther" placeholder="Enter airline name" style="display:none;margin-top:8px;">
+    </div>
+
+    <div class="field wheel-field">
+      <label>Airline-approved transport time (residence ⇄ airport, one way)</label>
+      <div class="wheel-row">
+        <div class="wheel-wrap">
+          <div class="wheel-highlight"></div>
+          <div class="wheel-mask-top"></div>
+          <div class="wheel-mask-bottom"></div>
+          <div class="wheel-group">
+            <div class="wheel-col" id="setupCommute_h"></div>
+            <div class="wheel-colon">:</div>
+            <div class="wheel-col" id="setupCommute_m"></div>
+          </div>
+        </div>
+        <span class="wheel-unit">HH : MM</span>
+      </div>
+    </div>
+
+    <button class="btn" id="setupContinueBtn">Continue</button>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <div class="brand-mark">Fatigue Management · Reference Tool</div>
+      <h1>Cabin Crew FDTL Calculator</h1>
+      <p class="sub">Flight Duty Period, minimum rest and cumulative limit checks for cabin crew, based on the published DGCA prescriptive fatigue management limits.</p>
+    </div>
+    <div>
+      <div class="reg-tag">CAR SECTION 7 · SERIES J · PART I<br>FDTL — CABIN CREW</div>
+      <div class="profile-badge" id="profileBadge"></div>
+    </div>
+  </header>
+
+  <!-- ============ CARD 1: FDP CALCULATOR ============ -->
+  <div class="card">
+    <h2><span class="idx">01</span>Duty Period (DP) / FDP Check</h2>
+    <p class="desc">Enter one duty period to check it against the maximum permissible FDP, including WOCL reduction and any unforeseen extension of the Duty Period (DP), and to get the minimum rest — including compensatory rest (comp-off) where applicable.</p>
+
+    <div class="grid">
+      <div class="field wheel-field">
+        <label>Reporting time</label>
+        <div class="wheel-row">
+          <div class="wheel-wrap">
+            <div class="wheel-highlight"></div>
+            <div class="wheel-mask-top"></div>
+            <div class="wheel-mask-bottom"></div>
+            <div class="wheel-group">
+              <div class="wheel-col" id="reportTime_h"></div>
+              <div class="wheel-colon">:</div>
+              <div class="wheel-col" id="reportTime_m"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="field wheel-field">
+        <label>Sign-off time (chocks-on, incl. post-flight briefing)</label>
+        <div class="wheel-row">
+          <div class="wheel-wrap">
+            <div class="wheel-highlight"></div>
+            <div class="wheel-mask-top"></div>
+            <div class="wheel-mask-bottom"></div>
+            <div class="wheel-group">
+              <div class="wheel-col" id="signOffTime_h"></div>
+              <div class="wheel-colon">:</div>
+              <div class="wheel-col" id="signOffTime_m"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="field wheel-field">
+        <label>Total flight (block) time, this duty</label>
+        <div class="wheel-row">
+          <div class="wheel-wrap">
+            <div class="wheel-highlight"></div>
+            <div class="wheel-mask-top"></div>
+            <div class="wheel-mask-bottom"></div>
+            <div class="wheel-group">
+              <div class="wheel-col" id="flightTime_h"></div>
+              <div class="wheel-colon">:</div>
+              <div class="wheel-col" id="flightTime_m"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="field wheel-field">
+        <label>Number of sectors / landings</label>
+        <div class="wheel-row">
+          <div class="wheel-wrap">
+            <div class="wheel-highlight"></div>
+            <div class="wheel-mask-top"></div>
+            <div class="wheel-mask-bottom"></div>
+            <div class="wheel-group">
+              <div class="wheel-col" id="landings"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="field">
+        <label for="tzCrossed">Time zones crossed (for rest calc)</label>
+        <select id="tzCrossed">
+          <option value="12">Within 3 time zones</option>
+          <option value="14">More than 3, up to 7 time zones</option>
+          <option value="36">More than 7 time zones</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="btn" onclick="calculateFDP()">Calculate DP / FDP &amp; rest</button>
+
+    <div class="result" id="fdpResult"></div>
+  </div>
+
+  <!-- ============ REFERENCE ============ -->
+  <div class="card">
+    <h2><span class="idx">Ref</span>Prescriptive Limits (for reference)</h2>
+    <p class="desc">Maximum flight time / FDP / landings by duty band, as published under CAR-7-J-I.</p>
+
+    <table class="ref">
+      <thead><tr><th>Max flight time</th><th>Max FDP</th><th>Max landings</th></tr></thead>
+      <tbody>
+        <tr><td>&le; 8:00</td><td>12:00</td><td>6</td></tr>
+        <tr><td>&gt; 8:00 – 11:00</td><td>15:00</td><td>3</td></tr>
+        <tr><td>&gt; 11:00 – 14:00</td><td>18:00</td><td>1</td></tr>
+        <tr><td>&gt; 14:00 (ULR, case-by-case DGCA approval)</td><td>22:00</td><td>1</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="footnote">
+    <strong>Basis &amp; limitations:</strong> figures reflect the widely-published summary of DGCA CAR Section 7, Series J, Part I (Cabin Crew FDTL). WOCL is taken as 02:00–05:59, with a 100% reduction (capped at 2h) when a duty starts inside it and a 50% reduction when a duty ends in or spans it. Sign-off time is taken as chocks-on and is assumed to already include post-flight briefing — no separate buffer is added. The 15h FDP allowance for the &gt;8:00–11:00 flight-time band only applies with 3 sectors or fewer; beyond 3 sectors in that band the maximum reverts to 12h. An unforeseen extension of the Duty Period (DP) beyond the adjusted max FDP is permissible at the commander's discretion up to 4 hours in any 24 hours; the extension is doubled and added to the rest owed after that duty as compensatory rest (comp-off). Note that DGCA's scheme also caps cumulative extensions at 10 hours in any 28 days — this tool checks the single-duty 4-hour cap only, so track your rolling 28-day extension total separately. The next legal reporting time accounts for the required rest plus the opted transport time both after sign-off (going home) and before the next report (returning to the airport). The flight-time/FDP/landings table is a simplified version of the regulation; DGCA's full scheme also varies FDP by number of sectors within each band in finer steps. This tool is a planning aid only — always verify against your operator's current, DGCA-approved FDTL Scheme (part of the Operations Manual), which is the sole authoritative source and may reflect a newer CAR issue.
+  </p>
+</div>
+
+<script>
+  /* ===================== helpers ===================== */
+  function pad(n, len=2){ return n.toString().padStart(len,'0'); }
+  function toMinutes(hhmm){
+    const [h,m] = hhmm.split(':').map(Number);
+    return h*60+m;
+  }
+  function fmt(mins){
+    const sign = mins < 0 ? '-' : '';
+    mins = Math.round(Math.abs(mins));
+    return `${sign}${Math.floor(mins/60)}h ${mins%60}m`;
+  }
+  function addToClock(hhmm, minsToAdd){
+    let total = toMinutes(hhmm) + minsToAdd;
+    total = ((total % 1440) + 1440) % 1440;
+    return `${pad(Math.floor(total/60))}:${pad(total%60)}`;
+  }
+  function overlap(aStart,aEnd,bStart,bEnd){
+    return Math.max(0, Math.min(aEnd,bEnd) - Math.max(aStart,bStart));
+  }
+
+  /* ===================== wheel picker ===================== */
+  const ITEM_H = 40;
+  const wheels = {}; // id -> {getValue, setValue}
+
+  function makeWheel(container, {min, max, step=1, padLen=2, initial}){
+    const values = [];
+    for(let v=min; v<=max; v+=step) values.push(v);
+    let html = `<div class="wpad"></div>`;
+    values.forEach(v=>{ html += `<div class="wheel-item" data-v="${v}">${pad(v,padLen)}</div>`; });
+    html += `<div class="wpad"></div>`;
+    container.innerHTML = html;
+
+    let value = values.includes(initial) ? initial : values[0];
+
+    function highlight(){
+      container.querySelectorAll('.wheel-item').forEach(el=>{
+        el.classList.toggle('selected', parseInt(el.dataset.v,10)===value);
+      });
+    }
+    function setValue(v, animate=true){
+      const idx = values.indexOf(v);
+      if(idx<0) return;
+      value = v;
+      container.scrollTo({top: idx*ITEM_H, behavior: animate?'smooth':'auto'});
+      highlight();
+    }
+
+    // initial position (no animation)
+    setValue(value, false);
+
+    let settleTimer;
+    container.addEventListener('scroll', ()=>{
+      clearTimeout(settleTimer);
+      settleTimer = setTimeout(()=>{
+        let idx = Math.round(container.scrollTop/ITEM_H);
+        idx = Math.max(0, Math.min(values.length-1, idx));
+        container.scrollTo({top: idx*ITEM_H, behavior:'smooth'});
+        value = values[idx];
+        highlight();
+      }, 120);
+    });
+
+    container.addEventListener('click', (e)=>{
+      const item = e.target.closest('.wheel-item');
+      if(!item) return;
+      setValue(parseInt(item.dataset.v,10));
+    });
+
+    return { getValue: ()=>value, setValue };
+  }
+
+  function buildTimeWheel(idPrefix, hMin, hMax, hPad, initH, initM){
+    wheels[idPrefix+'_h'] = makeWheel(document.getElementById(idPrefix+'_h'), {min:hMin,max:hMax,padLen:hPad,initial:initH});
+    wheels[idPrefix+'_m'] = makeWheel(document.getElementById(idPrefix+'_m'), {min:0,max:59,padLen:2,initial:initM});
+  }
+  function getTimeWheel(idPrefix){
+    return `${pad(wheels[idPrefix+'_h'].getValue(), wheels[idPrefix+'_h']._padLen||2)}:${pad(wheels[idPrefix+'_m'].getValue(),2)}`;
+  }
+  // simpler getter that doesn't rely on stored padLen (build string directly)
+  function timeWheelValue(idPrefix){
+    return `${wheels[idPrefix+'_h'].getValue()}:${pad(wheels[idPrefix+'_m'].getValue(),2)}`;
+  }
+
+  function initAllWheels(profile){
+    // FDP card
+    buildTimeWheel('reportTime', 0, 23, 2, 6, 0);
+    buildTimeWheel('signOffTime', 0, 23, 2, 14, 30);
+    buildTimeWheel('flightTime', 0, 23, 2, 7, 30);
+    wheels['landings'] = makeWheel(document.getElementById('landings'), {min:1,max:8,padLen:1,initial:4});
+
+    // setup overlay commute wheel
+    const commuteInit = profile && profile.commute ? profile.commute.split(':').map(Number) : [1,0];
+    buildTimeWheel('setupCommute', 0, 6, 2, commuteInit[0], commuteInit[1]);
+  }
+
+  /* ===================== profile (airline + commute) ===================== */
+  function loadProfile(){
+    try{
+      const raw = localStorage.getItem('fdtl_profile_v1');
+      return raw ? JSON.parse(raw) : null;
+    }catch(e){ return null; }
+  }
+  function saveProfile(p){
+    try{ localStorage.setItem('fdtl_profile_v1', JSON.stringify(p)); }catch(e){}
+  }
+  function renderProfileBadge(p){
+    const el = document.getElementById('profileBadge');
+    if(!p){ el.innerHTML = ''; return; }
+    el.innerHTML = `<span>${p.airline} · Commute ${p.commute}</span><button id="editProfileBtn" type="button">Edit profile</button>`;
+    document.getElementById('editProfileBtn').addEventListener('click', ()=>showSetupOverlay(p));
+  }
+  function showSetupOverlay(existing){
+    const overlay = document.getElementById('setupOverlay');
+    overlay.classList.remove('hidden');
+    const sel = document.getElementById('airlineSelect');
+    const other = document.getElementById('airlineOther');
+    if(existing){
+      const known = Array.from(sel.options).some(o=>o.value===existing.airline);
+      if(known){ sel.value = existing.airline; other.style.display='none'; }
+      else{ sel.value = '__other'; other.style.display='block'; other.value = existing.airline; }
+      wheels['setupCommute_h'].setValue(parseInt(existing.commute.split(':')[0],10), false);
+      wheels['setupCommute_m'].setValue(parseInt(existing.commute.split(':')[1],10), false);
+    }
+  }
+  function hideSetupOverlay(){
+    document.getElementById('setupOverlay').classList.add('hidden');
+  }
+
+  document.getElementById('airlineSelect').addEventListener('change', (e)=>{
+    document.getElementById('airlineOther').style.display = e.target.value === '__other' ? 'block' : 'none';
+  });
+
+  document.getElementById('setupContinueBtn').addEventListener('click', ()=>{
+    const sel = document.getElementById('airlineSelect');
+    const other = document.getElementById('airlineOther');
+    let airline = sel.value;
+    if(airline === '__other'){ airline = other.value.trim(); }
+    if(!airline){
+      sel.style.borderColor = 'var(--red)';
+      return;
+    }
+    const commute = timeWheelValue('setupCommute');
+    const profile = { airline, commute };
+    saveProfile(profile);
+    renderProfileBadge(profile);
+    hideSetupOverlay();
+  });
+
+  /* ===================== FDP / DP calculation ===================== */
+  function calculateFDP(){
+    const reportTime = timeWheelValue('reportTime');
+    const signOffTime = timeWheelValue('signOffTime'); // chocks-on, includes post-flight briefing
+    const flightTime = timeWheelValue('flightTime');
+    const landings = wheels['landings'].getValue();
+    const tzRestMin = parseInt(document.getElementById('tzCrossed').value,10) * 60;
+    const profile = loadProfile();
+    const commuteMin = profile ? toMinutes(profile.commute) : 0;
+
+    const reportAbs = toMinutes(reportTime);
+    let actualFDP = toMinutes(signOffTime) - reportAbs;
+    if(actualFDP < 0) actualFDP += 1440;
+    const flightMins = toMinutes(flightTime);
+
+    // base table lookup — 15h allowance requires flight time >8:00–11:00 AND 3 sectors or fewer
+    let baseFDP, maxLandings, band;
+    let sectorNote = '';
+    if(flightMins <= 480){
+      baseFDP = 720; maxLandings = 6; band = '≤ 8:00 flight time';
+    } else if(flightMins <= 660){
+      if(landings <= 3){
+        baseFDP = 900; maxLandings = 3; band = '> 8:00–11:00 flight time, ≤3 sectors';
+      } else {
+        baseFDP = 720; maxLandings = 6; band = '> 8:00–11:00 flight time, but >3 sectors';
+        sectorNote = 'The 15h FDP allowance only applies with 3 sectors or fewer. With more than 3 sectors in this flight-time band, the maximum reverts to the 12h allowance.';
+      }
+    } else if(flightMins <= 840){
+      baseFDP = 1080; maxLandings = 1; band = '> 11:00–14:00 flight time';
+    } else {
+      baseFDP = 1320; maxLandings = 1; band = '> 14:00 (ULR — needs DGCA case-by-case approval)';
+    }
+
+    // WOCL overlap (0200-0600), checked across two midnight-spanning instances
+    const WOCL_S = 120, WOCL_E = 360;
+    const dutyEndAbs = reportAbs + actualFDP;
+    const ov1 = overlap(reportAbs, dutyEndAbs, WOCL_S, WOCL_E);
+    const ov2 = overlap(reportAbs, dutyEndAbs, WOCL_S+1440, WOCL_E+1440);
+    const totalOverlap = ov1 + ov2;
+    const startsInWOCL = (reportAbs % 1440) >= WOCL_S && (reportAbs % 1440) < WOCL_E;
+
+    let woclReduction = 0;
+    if(totalOverlap > 0){
+      woclReduction = startsInWOCL ? Math.min(totalOverlap, 120) : Math.min(totalOverlap * 0.5, 120);
+    }
+    const adjustedMaxFDP = Math.max(baseFDP - woclReduction, 0);
+
+    const violations = [];
+    const warnings = [];
+    if(sectorNote) warnings.push(sectorNote);
+
+    // --- Extension of Duty Period (DP), triggers comp-off ---
+    // Permissible up to 4h in any 24h, at the commander's discretion for unforeseen circumstances.
+    let dpExtension = 0;
+    let compOffMinutes = 0;
+    let compOffDue = false;
+    if(actualFDP > adjustedMaxFDP){
+      dpExtension = actualFDP - adjustedMaxFDP;
+      if(dpExtension > 240){
+        violations.push(`Duty Period (DP) extension of ${fmt(dpExtension)} exceeds the permissible 4-hour limit in any 24 hours — not permitted.`);
+      } else {
+        compOffMinutes = dpExtension * 2;
+        compOffDue = true;
+        warnings.push(`Duty Period extended by ${fmt(dpExtension)} beyond the adjusted max FDP — within the 4-hour unforeseen-extension limit. The extension is doubled and added to the rest owed after this duty as compensatory rest (comp-off): ${fmt(compOffMinutes)}.`);
+      }
+    }
+
+    if(landings > maxLandings){
+      violations.push(`${landings} landings exceeds the ${maxLandings} landing(s) allowed for the ${band} band — check the sector-based matrix in the approved FDTL Scheme.`);
+    }
+
+    // Statutory rest: at least as long as the preceding duty, plus doubled extension (comp-off), floored by the tz-based minimum.
+    const requiredRest = Math.max(actualFDP, tzRestMin) + compOffMinutes;
+    // Next legal reporting time also has to allow for the opted transport time home after sign-off, and back to the airport before reporting.
+    const totalBeforeNextReport = requiredRest + (commuteMin * 2);
+    const nextLegalReport = addToClock(signOffTime, totalBeforeNextReport);
+
+    let html = `
+      <div class="readout">
+        <div class="item"><div class="k">Actual Duty Period (DP)</div><div class="v ${violations.length?'bad':(dpExtension>0?'warn':'ok')}">${fmt(actualFDP)}</div></div>
+        <div class="item"><div class="k">Max permissible FDP (band)</div><div class="v">${fmt(baseFDP)}</div></div>
+        <div class="item"><div class="k">WOCL reduction applied</div><div class="v ${woclReduction>0?'warn':''}">${fmt(woclReduction)}</div></div>
+        <div class="item"><div class="k">Adjusted max FDP</div><div class="v">${fmt(adjustedMaxFDP)}</div></div>
+        <div class="item"><div class="k">DP extension (unforeseen)</div><div class="v ${dpExtension>240?'bad':(dpExtension>0?'warn':'')}">${dpExtension>0?fmt(dpExtension):'None'}</div></div>
+        <div class="item"><div class="k">Compensatory rest (comp-off) owed</div><div class="v ${compOffDue?'warn':''}">${compOffDue?fmt(compOffMinutes):'Not applicable'}</div></div>
+        <div class="item"><div class="k">Required minimum rest (undisturbed)</div><div class="v ok">${fmt(requiredRest)}</div></div>
+        <div class="item"><div class="k">Transport time (each way)</div><div class="v">${profile?fmt(commuteMin):'Not set'}</div></div>
+        <div class="item"><div class="k">Total before next report (rest + transport)</div><div class="v">${fmt(totalBeforeNextReport)}</div></div>
+        <div class="item"><div class="k">Next legal reporting time</div><div class="v">${nextLegalReport}</div></div>
+      </div>
+    `;
+
+    if(violations.length){
+      html += `<div class="status-banner bad">Rule check — issues found:<ul>${violations.map(v=>`<li>${v}</li>`).join('')}</ul></div>`;
+    } else if(warnings.length){
+      html += `<div class="status-banner warn">Within limits, with a flagged condition:<ul>${warnings.map(v=>`<li>${v}</li>`).join('')}</ul></div>`;
+    } else {
+      html += `<div class="status-banner ok">Within limits for the ${band} band.</div>`;
+    }
+
+    // timeline: duty, then transport-home, rest, transport-back
+    const restEndAbsRel = actualFDP + totalBeforeNextReport;
+    const dutyPct = (actualFDP/restEndAbsRel*100).toFixed(2);
+    const commuteOutPct = (commuteMin/restEndAbsRel*100).toFixed(2);
+    const restPct = (requiredRest/restEndAbsRel*100).toFixed(2);
+    const commuteInPct = (commuteMin/restEndAbsRel*100).toFixed(2);
+    const woclStartRel = ov1>0 ? Math.max(0, WOCL_S - reportAbs) : (ov2>0 ? Math.max(0, WOCL_S+1440-reportAbs) : null);
+    let woclSegHtml = '';
+    if(totalOverlap>0 && woclStartRel!==null){
+      const woclLeftPct = (woclStartRel/restEndAbsRel*100).toFixed(2);
+      const woclWidthPct = (totalOverlap/restEndAbsRel*100).toFixed(2);
+      woclSegHtml = `<div class="seg wocl" style="position:absolute;left:${woclLeftPct}%;width:${woclWidthPct}%;top:0;"></div>`;
+    }
+
+    html += `
+      <div class="timeline-wrap">
+        <div class="timeline-labels"><span>${reportTime} report</span><span>${signOffTime} sign-off</span><span>${nextLegalReport} next report</span></div>
+        <div class="timeline" style="position:relative;">
+          <div class="seg duty" style="width:${dutyPct}%;"></div>
+          ${commuteMin>0?`<div class="seg commute" style="width:${commuteOutPct}%;"></div>`:''}
+          <div class="seg rest" style="width:${restPct}%;"></div>
+          ${commuteMin>0?`<div class="seg commute" style="width:${commuteInPct}%;"></div>`:''}
+          ${woclSegHtml}
+        </div>
+        <div class="timeline-legend">
+          <span><span class="swatch" style="background:#1b3a5c;"></span>Duty (DP/FDP)</span>
+          <span><span class="swatch" style="background:rgba(245,166,35,.7);"></span>WOCL overlap</span>
+          ${commuteMin>0?'<span><span class="swatch" style="background:#3a2f52;"></span>Transport</span>':''}
+          <span><span class="swatch" style="background:#123326;"></span>Rest period</span>
+        </div>
+      </div>
+    `;
+
+    document.getElementById('fdpResult').innerHTML = html;
+  }
+
+  /* ===================== boot ===================== */
+  const existingProfile = loadProfile();
+  initAllWheels(existingProfile);
+  if(existingProfile){
+    hideSetupOverlay();
+    renderProfileBadge(existingProfile);
+  } else {
+    showSetupOverlay(null);
+  }
+
+  calculateFDP();
+</script>
+</body>
+</html>

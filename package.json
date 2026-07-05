@@ -1,0 +1,13 @@
+{
+  "name": "cabin-crew-fdtl-calculator",
+  "version": "1.0.0",
+  "description": "Cabin Crew FDTL Calculator - offline DGCA duty/rest reference tool",
+  "scripts": {
+    "sync": "cap sync"
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.2.1",
+    "@capacitor/cli": "^6.2.1",
+    "@capacitor/core": "^6.2.1"
+  }
+}
